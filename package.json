@@ -1,0 +1,22 @@
+{
+  "name": "stokercloudcustom",
+  "version": "0.0.1",
+  "description": "Custom data from stokercloud service",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kpihus/StokerCloudCustom.git"
+  },
+  "author": "Kristjan Pihus",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kpihus/StokerCloudCustom/issues"
+  },
+  "homepage": "https://github.com/kpihus/StokerCloudCustom#readme",
+  "dependencies": {
+    "hapi": "^9.3.0"
+  }
+}
