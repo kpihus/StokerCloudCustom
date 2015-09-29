@@ -5,7 +5,7 @@ var escape = require('pg-escape');
 var q = require('q');
 var app = require('./index');
 
-var conString = 'postgres://localhost/stoker';
+var conString = 'postgres://admin@localhost/stoker';
 var apiHost = 'stokercloud.dk';
 
 function parseGeneral(obj, data) {
