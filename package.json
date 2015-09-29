@@ -4,7 +4,8 @@
   "description": "Custom data from stokercloud service",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pg-migrate": "export $(cat .env | xargs) && ./node_modules/.bin/pg-migrate"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,13 @@
   },
   "homepage": "https://github.com/kpihus/StokerCloudCustom#readme",
   "dependencies": {
-    "hapi": "^9.3.0"
+    "cron": "^1.0.9",
+    "good": "^6.4.0",
+    "good-console": "^5.1.0",
+    "hapi": "^9.3.0",
+    "node-pg-migrate": "0.0.9",
+    "pg": "^4.4.1",
+    "pg-escape": "^0.1.0",
+    "q": "^1.4.1"
   }
 }
