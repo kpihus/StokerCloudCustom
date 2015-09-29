@@ -6,7 +6,7 @@ var q = require('q');
 var app = require('./index');
 
 var conString = 'postgres://localhost/stoker';
-var apiHost = 'http://stokercloud.dk';
+var apiHost = 'stokercloud.dk';
 
 function parseGeneral(obj, data) {
 	obj = JSON.parse(obj);
