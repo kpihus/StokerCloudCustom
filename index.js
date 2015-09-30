@@ -5,7 +5,7 @@ var cron = require('./cron');
 var inert = require('inert');
 var Path = require('path');
 var services = require('./services.js');
-
+process.env.TZ = 'Europe/Tallinn';
 var server = new Hapi.Server();
 server.connection({port: 3000});
 
