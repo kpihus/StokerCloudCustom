@@ -14,7 +14,7 @@ function parseGeneral(obj, data) {
 		roomTemp: obj['592'].split(' ')[0],
 		outTemp: obj['524'].split(' ')[0],
 		windSpd: obj['587'].split(' ')[0],
-		power: obj['502'].split(' ')[0]
+		power: obj['504'].split(' ')[0]
 	};
 	return data;
 }
@@ -64,6 +64,7 @@ function makeRequest(options, callback) {
 			str += chunk;
 		});
 		response.on('end', function() {
+			console.log(str);
 			callback(str);
 
 		});
@@ -100,7 +101,7 @@ exports.writeToDb = function(data, callback){
 function makeTime(timestamp){
 	var date = new Date(timestamp);
 	var hours = date.getHours();
-	var minutes = date.getMinutes();
+	var minutes = (date.getMinutes)=date.getMinutes();
 
 	return hours+':'+minutes;
 }
@@ -113,8 +114,8 @@ exports.chartData = function(callback){
 				label: "Out Temp",
 				fillColor: "rgba(168,171,255,0)",
 				strokeColor: "rgba(125,129,255,0.8)",
-				highlightFill: "rgba(220,220,220,0.75)",
-				highlightStroke: "rgba(220,220,220,1)",
+				highlightFill: "rgba(125,129,255,0.8)",
+				highlightStroke: "rgba(125,129,255,0.8)",
 				data: []
 			},
 			{
