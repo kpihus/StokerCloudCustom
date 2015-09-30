@@ -5,7 +5,7 @@ var escape = require('pg-escape');
 var q = require('q');
 var app = require('./index');
 
-var conString = 'postgres://admin@localhost/stoker';
+var conString = process.env.DATABASE_URL || 'postgres://admin@localhost/stoker';
 var apiHost = 'stokercloud.dk';
 
 function parseGeneral(obj, data) {
@@ -96,3 +96,87 @@ exports.writeToDb = function(data, callback){
 		})
 	});
 };
+
+function makeTime(timestamp){
+	var date = new Date(timestamp);
+	var hours = date.getHours();
+	var minutes = date.getMinutes();
+
+	return hours+':'+minutes;
+}
+
+exports.chartData = function(callback){
+	var data = {
+		labels: [],
+		datasets: [
+			{
+				label: "Out Temp",
+				fillColor: "rgba(168,171,255,0)",
+				strokeColor: "rgba(125,129,255,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",
+				data: []
+			},
+			{
+				label: "Room Temp",
+				fillColor: "rgba(255,163,185,0)",
+				strokeColor: "rgba(255,92,130,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",
+				data: []
+			},
+			{
+				label: "Outlet Wanted",
+				fillColor: "rgba(255,163,185,0)",
+				strokeColor: "rgba(100,255,79,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",
+				data: []
+			},
+			{
+				label: "Outlet Actual",
+				fillColor: "rgba(255,163,185,0)",
+				strokeColor: "rgba(255,173,79,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",
+				data: []
+			},
+			{
+				label: "Power",
+				fillColor: "rgba(255,163,185,0)",
+				strokeColor: "rgba(56,41,24,0.8)",
+				highlightFill: "rgba(220,220,220,0.75)",
+				highlightStroke: "rgba(220,220,220,1)",
+				data: []
+			}
+
+		]
+	};
+	var now = new Date().getTime();
+	pg.connect(conString, function(err, client, done){
+		if(err){
+			return callback(err);
+		}
+		var query = escape("SELECT * FROM %I WHERE time < %s and time > %s", 'data', now, now - 3600*6*1000 );
+		client.query(query, function(err, res){
+			done();
+			if(err){
+				return callback(err);
+			}
+			for(var i=0; i<res.rows.length; i++){
+				var item = res.rows[i];
+				data.labels.push(makeTime(parseInt(item.time)));
+				data.datasets[0].data.push(item.data.outTemp);
+				data.datasets[1].data.push(item.data.roomTemp);
+				data.datasets[2].data.push(item.data.outletWant);
+				data.datasets[3].data.push(item.data.outletAct);
+				data.datasets[4].data.push(item.data.power);
+			}
+
+
+			callback(null, data);
+		})
+	});
+
+};
+

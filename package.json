@@ -18,13 +18,19 @@
   },
   "homepage": "https://github.com/kpihus/StokerCloudCustom#readme",
   "dependencies": {
+    "chart.js": "^1.0.2",
     "cron": "^1.0.9",
+    "dotenv": "^1.2.0",
     "good": "^6.4.0",
     "good-console": "^5.1.0",
+    "handlebars": "^4.0.3",
     "hapi": "^9.3.0",
+    "inert": "^3.0.1",
     "node-pg-migrate": "0.0.9",
+    "path": "^0.12.7",
     "pg": "^4.4.1",
     "pg-escape": "^0.1.0",
-    "q": "^1.4.1"
+    "q": "^1.4.1",
+    "vision": "^3.0.0"
   }
 }

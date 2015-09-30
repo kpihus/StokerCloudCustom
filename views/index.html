@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="/js/Chart.js"></script>
+</head>
+<body>
+
+<canvas id="myChart" width="800" height="600"></canvas>
+<script>
+
+    $(document).ready(function(){
+        $.get("getData", function(data){
+           console.log(data);
+            var ctx = document.getElementById("myChart").getContext("2d");
+            var myBarChart = new Chart(ctx).Line(data,{
+                legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+            });
+        });
+    });
+
+</script>
+</body>
+</html>
