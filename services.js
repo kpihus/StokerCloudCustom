@@ -64,7 +64,6 @@ function makeRequest(options, callback) {
 			str += chunk;
 		});
 		response.on('end', function() {
-			console.log(str);
 			callback(str);
 
 		});
@@ -100,10 +99,14 @@ exports.writeToDb = function(data, callback){
 
 function makeTime(timestamp){
 	var date = new Date(timestamp);
-	var hours = date.getHours();
-	var minutes = (date.getMinutes)=date.getMinutes();
+	var time = "";
+	if (date.getMinutes() ==0 ){
+		time = date.getHours()+":00";
+	} else if(date.getMinutes() == 30){
+		time = date.getHours()+":30";
+	}
 
-	return hours+':'+minutes;
+	return time;
 }
 
 exports.chartData = function(callback){
