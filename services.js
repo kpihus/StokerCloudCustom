@@ -119,6 +119,7 @@ exports.chartData = function(callback){
 				strokeColor: "rgba(125,129,255,0.8)",
 				highlightFill: "rgba(125,129,255,0.8)",
 				highlightStroke: "rgba(125,129,255,0.8)",
+				pointHighlightStroke: "rgba(125,129,255,0.8)",
 				data: []
 			},
 			{
@@ -161,7 +162,7 @@ exports.chartData = function(callback){
 		if(err){
 			return callback(err);
 		}
-		var query = escape("SELECT * FROM %I WHERE time < %s and time > %s", 'data', now, now - 3600*6*1000 );
+		var query = escape("SELECT * FROM %I WHERE time < %s and time > %s", 'data', now, now - 3600*12*1000 );
 		client.query(query, function(err, res){
 			done();
 			if(err){
@@ -182,5 +183,29 @@ exports.chartData = function(callback){
 		})
 	});
 
+};
+
+exports.getLatest = function(callback){
+	pg.connect(conString, function(err, client, done){
+		if(err){
+			return callback(err);
+		}
+		var query = escape("SELECT * FROM %I ORDER BY time desc LIMIT 1", 'data');
+		client.query(query, function(err, res){
+			done();
+			var item = res.rows[0];
+			var data = {
+				label: makeTime(item.time),
+				data:[
+					item.data.outTemp,
+					item.data.roomTemp,
+					item.data.outletWant,
+					item.data.outletAct,
+					item.data.power
+				]
+			};
+			callback(null, data);
+		})
+	})
 };
 

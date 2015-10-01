@@ -5,22 +5,79 @@
     <title></title>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <script src="/js/Chart.js"></script>
+    <style>
+        #all {
+            width: 100%;
+            background-color: #777777;
+        }
+        #chart{
+            position: relative;
+            float: left;
+        }
+        #right{
+            margin-top: 10px;
+            margin-left: 20px;
+            position: relative;
+            float: left;
+            width: 300px;
+        }
+        .box{
+            display: inline-block;
+            height: 15px;
+            margin-right: 5px;
+            width: 15px;
+        }
+    </style>
 </head>
 <body>
-
-<canvas id="myChart" width="800" height="600"></canvas>
+<div id="all">
+    <div id="chart">
+        <canvas id="myChart" width="800" height="600"></canvas>
+    </div>
+    <div id="right">
+        <label><strong>Legend</strong></label>
+    </div>
+</div>
 <script>
 
-    $(document).ready(function(){
-        $.get("getData", function(data){
-           console.log(data);
-            var ctx = document.getElementById("myChart").getContext("2d");
-            var myBarChart = new Chart(ctx).Line(data,{
-                pointDot: false,
-                datasetStrokeWidth: 1,
-                legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-            });
+    $(document).ready(function() {
+        var chartOpts = {
+            pointDot: false,
+            datasetStrokeWidth: 1
+//            legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+        };
+        var data = null;
+        var ctx = document.getElementById("myChart").getContext("2d");
+//        Chart.defaults.global={
+//            responsive: true
+//        };
+        var myLineChart = new Chart(ctx);
+
+        $.get("getData", function(data) {
+            myLineChart.Line(data, chartOpts);
+            makeLegend(data);
         });
+
+//        setInterval(function() {
+//            update();
+//        }, 60000);
+        function makeLegend(data){
+            for(var i=0; i<data.datasets.length; i++){
+                var item = data.datasets[i];
+                var label = item.label;
+                var color = item.strokeColor;
+                var val = item.data[item.data.length-1];
+                var html = "<div><div class='box' style='background-color: "+color+"'></div><span>"+label+"</span><span>("+val+")</span></div>"
+                $('#right').append(html);
+            }
+        }
+        function update() {
+            $.get("getLatest", function(data) {
+                //{"label":"","data":["7.7","23.3","33.1","33.6","6.4"]}
+                myLineChart.addData(data.data, data.label);
+            });
+        }
+
     });
 
 </script>

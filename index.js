@@ -47,6 +47,22 @@ server.route({
 	path: '/getData',
 	handler: function(request, reply){
 		services.chartData(function(err, res){
+			if(err){
+				server.log(err);
+			}
+			reply(res);
+		})
+	}
+});
+
+server.route({
+	method: 'GET',
+	path: '/getLatest',
+	handler: function(request, reply){
+		services.getLatest(function(err, res){
+			if(err){
+				server.log(err);
+			}
 			reply(res);
 		})
 	}
