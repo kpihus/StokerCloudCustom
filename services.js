@@ -156,7 +156,7 @@ exports.chartData = function(callback){
 			},
 			{
 				label: "Power",
-				unit: "%",
+				unit: "kW",
 				fillColor: "rgba(255,163,185,0)",
 				strokeColor: "rgba(56,41,24,0.8)",
 				pointColor: "rgba(56,41,24,0.8)",
