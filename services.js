@@ -118,6 +118,7 @@ exports.chartData = function(callback){
 				unit: "\xB0 C",
 				fillColor: "rgba(168,171,255,0)",
 				strokeColor: "rgba(125,129,255,0.8)",
+				pointColor: "rgba(125,129,255,0.8)",
 				highlightFill: "rgba(125,129,255,0.8)",
 				highlightStroke: "rgba(125,129,255,0.8)",
 				pointHighlightStroke: "rgba(125,129,255,0.8)",
@@ -128,6 +129,7 @@ exports.chartData = function(callback){
 				unit: "\xB0 C",
 				fillColor: "rgba(255,163,185,0)",
 				strokeColor: "rgba(255,92,130,0.8)",
+				pointColor: "rgba(255,92,130,0.8)",
 				highlightFill: "rgba(220,220,220,0.75)",
 				highlightStroke: "rgba(220,220,220,1)",
 				data: []
@@ -137,6 +139,7 @@ exports.chartData = function(callback){
 				unit: "\xB0 C",
 				fillColor: "rgba(255,163,185,0)",
 				strokeColor: "rgba(100,255,79,0.8)",
+				pointColor: "rgba(100,255,79,0.8)",
 				highlightFill: "rgba(220,220,220,0.75)",
 				highlightStroke: "rgba(220,220,220,1)",
 				data: []
@@ -146,6 +149,7 @@ exports.chartData = function(callback){
 				unit: "\xB0 C",
 				fillColor: "rgba(255,163,185,0)",
 				strokeColor: "rgba(255,173,79,0.8)",
+				pointColor: "rgba(255,173,79,0.8)",
 				highlightFill: "rgba(220,220,220,0.75)",
 				highlightStroke: "rgba(220,220,220,1)",
 				data: []
@@ -155,6 +159,7 @@ exports.chartData = function(callback){
 				unit: "%",
 				fillColor: "rgba(255,163,185,0)",
 				strokeColor: "rgba(56,41,24,0.8)",
+				pointColor: "rgba(56,41,24,0.8)",
 				highlightFill: "rgba(220,220,220,0.75)",
 				highlightStroke: "rgba(220,220,220,1)",
 				data: []
