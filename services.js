@@ -115,6 +115,7 @@ exports.chartData = function(callback){
 		datasets: [
 			{
 				label: "Out Temp",
+				unit: "\xB0 C",
 				fillColor: "rgba(168,171,255,0)",
 				strokeColor: "rgba(125,129,255,0.8)",
 				highlightFill: "rgba(125,129,255,0.8)",
@@ -124,6 +125,7 @@ exports.chartData = function(callback){
 			},
 			{
 				label: "Room Temp",
+				unit: "\xB0 C",
 				fillColor: "rgba(255,163,185,0)",
 				strokeColor: "rgba(255,92,130,0.8)",
 				highlightFill: "rgba(220,220,220,0.75)",
@@ -132,6 +134,7 @@ exports.chartData = function(callback){
 			},
 			{
 				label: "Outlet Wanted",
+				unit: "\xB0 C",
 				fillColor: "rgba(255,163,185,0)",
 				strokeColor: "rgba(100,255,79,0.8)",
 				highlightFill: "rgba(220,220,220,0.75)",
@@ -140,6 +143,7 @@ exports.chartData = function(callback){
 			},
 			{
 				label: "Outlet Actual",
+				unit: "\xB0 C",
 				fillColor: "rgba(255,163,185,0)",
 				strokeColor: "rgba(255,173,79,0.8)",
 				highlightFill: "rgba(220,220,220,0.75)",
@@ -148,6 +152,7 @@ exports.chartData = function(callback){
 			},
 			{
 				label: "Power",
+				unit: "%",
 				fillColor: "rgba(255,163,185,0)",
 				strokeColor: "rgba(56,41,24,0.8)",
 				highlightFill: "rgba(220,220,220,0.75)",
