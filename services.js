@@ -186,7 +186,7 @@ exports.chartData = function(callback) {
 		if(err) {
 			return callback(err);
 		}
-		var query = escape("SELECT * FROM %I WHERE time < %s and time > %s", 'data', now, now - 3600 * 12 * 1000);
+		var query = escape("SELECT * FROM %I WHERE time < %s and time > %s", 'data', now, now - 3600 * 24 * 1000);
 		client.query(query, function(err, res) {
 			done();
 			if(err) {
@@ -201,7 +201,6 @@ exports.chartData = function(callback) {
 				data.datasets[3].data.push(item.data.outletAct);
 				data.datasets[4].data.push(item.data.power);
 			}
-
 			callback(null, data);
 		})
 	});

@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title></title>
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
+
     <script src="/js/Chart.js"></script>
     <style>
         #all {
@@ -15,10 +17,9 @@
             float: left;
         }
         #right{
-            margin-top: 10px;
-            margin-left: 20px;
-            position: relative;
-            float: left;
+            left: 40px;
+            position: absolute;
+            top: 24px;
             width: 190px;
         }
         .box{
@@ -30,24 +31,30 @@
     </style>
 </head>
 <body>
-<div id="all">
-    <div id="chart">
-        <canvas id="myChart" width="1000" height="600"></canvas>
-    </div>
-    <div id="right">
-        <label><strong>Legend</strong></label>
-    </div>
-</div>
+
 <script>
 
     $(document).ready(function() {
         var chart;
         var chartOpts = {
             pointDot: false,
-            datasetStrokeWidth: 1
+            datasetStrokeWidth: 1,
+            animation: false
 //            legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
         };
         var data = null;
+        function LegendVm() {
+            var self = this;
+            self.items = ko.observableArray([
+                {label: "Out temp", value: 5, unit: "C"}
+            ]);
+
+            self.additem = function(label, value, unit){
+                self.items.push({label: label, value: value, unit: unit})
+            }
+
+        }
+        ko.applyBindings(new LegendVm());
         var ctx = document.getElementById("myChart").getContext("2d");
 //        Chart.defaults.global={
 //            responsive: true
@@ -56,14 +63,16 @@
 
         $.get("getData", function(data) {
             chart = myLineChart.Line(data, chartOpts);
-            makeLegend(data);
+//            makeLegend(data);
         });
 
-        setInterval(function() {
-            update();
-        }, 60000);
+//        setInterval(function() {
+//            update();
+//        }, 60000);
         function makeLegend(data){
             for(var i=0; i<data.datasets.length; i++){
+
+
                 var item = data.datasets[i];
                 var label = item.label;
                 var color = item.strokeColor;
@@ -79,9 +88,24 @@
                 chart.addData(data.data, data.label);
             });
         }
-
     });
 
 </script>
+<div id="all">
+    <div id="chart">
+        <canvas id="myChart" width="1000" height="600"></canvas>
+    </div>
+    <div id="right">
+        <label><strong>Legend</strong></label>
+
+        <div data-bind="foreach: items">
+            <div class='box'></div>
+            <span data-bind="text: label"></span>
+            (<span data-bind="text: value"></span>
+            <span data-bind="text: unit"></span>)
+        </div>
+
+    </div>
+</div>
 </body>
 </html>
