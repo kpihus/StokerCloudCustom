@@ -152,8 +152,8 @@ exports.chartData = function(callback) {
 				label: "Outlet Wanted",
 				unit: "\xB0 C",
 				fillColor: "rgba(255,163,185,0)",
-				strokeColor: "rgba(100,255,79,0.8)",
-				pointColor: "rgba(100,255,79,0.8)",
+				strokeColor: "rgba(14,204,14,0.8)",
+				pointColor: "rgba(14,204,14,0.8)",
 				highlightFill: "rgba(220,220,220,0.75)",
 				highlightStroke: "rgba(220,220,220,1)",
 				data: []
@@ -162,8 +162,8 @@ exports.chartData = function(callback) {
 				label: "Outlet Actual",
 				unit: "\xB0 C",
 				fillColor: "rgba(255,163,185,0)",
-				strokeColor: "rgba(255,173,79,0.8)",
-				pointColor: "rgba(255,173,79,0.8)",
+				strokeColor: "rgba(255,140,140,0.8)",
+				pointColor: "rgba(255,140,140,0.8)",
 				highlightFill: "rgba(220,220,220,0.75)",
 				highlightStroke: "rgba(220,220,220,1)",
 				data: []
