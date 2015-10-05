@@ -8,6 +8,12 @@ var app = require('./index');
 var conString = process.env.DATABASE_URL || 'postgres://admin@localhost/stoker';
 var apiHost = 'stokercloud.dk';
 
+var options = {
+	host: 'stokercloud.dk',
+	path: '',
+	method: 'GET'
+};
+
 function parseGeneral(obj, data) {
 	obj = JSON.parse(obj);
 	data = {
@@ -29,28 +35,36 @@ function parseWeather(str, data) {
 	return data;
 }
 
+function parsePellets(str, data) {
+	var obj = JSON.parse(str);
+	var pelletsTotal = obj[0].data[0][1];
+	var pelletsDhw = obj[1].data[0][1];
+
+	data.pelletsHeat = pelletsTotal-pelletsDhw;
+
+	return data;
+}
+
 exports.getData = function(callback) {
 	var data;
 	var now = new Date();
-	var options = {
-		host: apiHost,
-		path: '/dev/getjsondriftdata.php?mac=kpihus&tid=' + now.getTime(),
-		method: 'GET'
-	};
+	options.path = '/dev/getjsondriftdata.php?mac=kpihus&tid=' + now.getTime();
 
 	//get general data
 
 	makeRequest(options, function(str) {
 		data = parseGeneral(str, data);
-
-		options = {
-			host: apiHost,
-			path: '/dev/weatherdata.php?mac=kpihus',
-			method: 'GET'
-		};
+		options.path = '/dev/weatherdata.php?mac=kpihus';
+		//Weather settings
 		makeRequest(options, function(str) {
 			data = parseWeather(str, data);
-			callback(data);
+			//Pellets consume
+			options.path = '/dev/getjsonusagenew.php?mac=kpihus&hours=24&' + now.getTime();
+			makeRequest(options, function(str) {
+				data = parsePellets(str, data);
+				callback(data);
+			})
+
 		})
 	})
 
@@ -68,28 +82,28 @@ function makeRequest(options, callback) {
 
 		});
 	});
-	req.on('error', function(e){
+	req.on('error', function(e) {
 		app.server.log(e);
 	});
-	req.on('timeout', function(){
+	req.on('timeout', function() {
 		app.server.log('timeout'); //TODO: Remove
 		req.abort();
 	});
-		req.setTimeout(5000);
-		req.end();
+	req.setTimeout(5000);
+	req.end();
 }
 
-exports.writeToDb = function(data, callback){
+exports.writeToDb = function(data, callback) {
 	var now = new Date().getTime();
-	pg.connect(conString, function(err, client, done){
-		if(err){
+	pg.connect(conString, function(err, client, done) {
+		if(err) {
 			return callback(err);
 		}
 		var query = escape("INSERT INTO %I (time, data) VALUES(%s, %L)", 'data', now, JSON.stringify(data));
 		app.server.log(query);
-		client.query(query, function(err, res){
+		client.query(query, function(err, res) {
 			done();
-			if(err){
+			if(err) {
 				return callback(err);
 			}
 			callback(null, res.rowCount);
@@ -97,19 +111,19 @@ exports.writeToDb = function(data, callback){
 	});
 };
 
-function makeTime(timestamp){
+function makeTime(timestamp) {
 	var date = new Date(timestamp);
 	var time = "";
-	if (date.getMinutes() ==0 ){
-		time = date.getHours()+":00";
-	} else if(date.getMinutes() == 30){
-		time = date.getHours()+":30";
+	if(date.getMinutes() == 0) {
+		time = date.getHours() + ":00";
+	} else if(date.getMinutes() == 30) {
+		time = date.getHours() + ":30";
 	}
 
 	return time;
 }
 
-exports.chartData = function(callback){
+exports.chartData = function(callback) {
 	var data = {
 		labels: [],
 		datasets: [
@@ -168,17 +182,17 @@ exports.chartData = function(callback){
 		]
 	};
 	var now = new Date().getTime();
-	pg.connect(conString, function(err, client, done){
-		if(err){
+	pg.connect(conString, function(err, client, done) {
+		if(err) {
 			return callback(err);
 		}
-		var query = escape("SELECT * FROM %I WHERE time < %s and time > %s", 'data', now, now - 3600*12*1000 );
-		client.query(query, function(err, res){
+		var query = escape("SELECT * FROM %I WHERE time < %s and time > %s", 'data', now, now - 3600 * 12 * 1000);
+		client.query(query, function(err, res) {
 			done();
-			if(err){
+			if(err) {
 				return callback(err);
 			}
-			for(var i=0; i<res.rows.length; i++){
+			for(var i = 0; i < res.rows.length; i++) {
 				var item = res.rows[i];
 				data.labels.push(makeTime(parseInt(item.time)));
 				data.datasets[0].data.push(item.data.outTemp);
@@ -188,25 +202,24 @@ exports.chartData = function(callback){
 				data.datasets[4].data.push(item.data.power);
 			}
 
-
 			callback(null, data);
 		})
 	});
 
 };
 
-exports.getLatest = function(callback){
-	pg.connect(conString, function(err, client, done){
-		if(err){
+exports.getLatest = function(callback) {
+	pg.connect(conString, function(err, client, done) {
+		if(err) {
 			return callback(err);
 		}
 		var query = escape("SELECT * FROM %I ORDER BY time desc LIMIT 1", 'data');
-		client.query(query, function(err, res){
+		client.query(query, function(err, res) {
 			done();
 			var item = res.rows[0];
 			var data = {
 				label: makeTime(item.time),
-				data:[
+				data: [
 					item.data.outTemp,
 					item.data.roomTemp,
 					item.data.outletWant,

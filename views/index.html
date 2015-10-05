@@ -41,6 +41,7 @@
 <script>
 
     $(document).ready(function() {
+        var chart;
         var chartOpts = {
             pointDot: false,
             datasetStrokeWidth: 1
@@ -54,13 +55,13 @@
         var myLineChart = new Chart(ctx);
 
         $.get("getData", function(data) {
-            myLineChart.Line(data, chartOpts);
+            chart = myLineChart.Line(data, chartOpts);
             makeLegend(data);
         });
 
-//        setInterval(function() {
-//            update();
-//        }, 60000);
+        setInterval(function() {
+            update();
+        }, 60000);
         function makeLegend(data){
             for(var i=0; i<data.datasets.length; i++){
                 var item = data.datasets[i];
@@ -73,8 +74,9 @@
         }
         function update() {
             $.get("getLatest", function(data) {
+                chart.removeData();
                 //{"label":"","data":["7.7","23.3","33.1","33.6","6.4"]}
-                myLineChart.addData(data.data, data.label);
+                chart.addData(data.data, data.label);
             });
         }
 
