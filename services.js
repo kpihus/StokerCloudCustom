@@ -193,10 +193,14 @@ exports.chartData = function(callback) {
 				return callback(err);
 			}
 			var count = 0;
-			var outTempAvg = 0, roomTempAvg = 0, outletWantAvg = 0, outletActAvg = 0, powerAvg = 0;
+			var outTempAvg = 0;
+			var roomTempAvg = 0;
+			var outletWantAvg = 0;
+			var outletActAvg = 0;
+			var powerAvg = 0;
 			for(var i = 0; i < res.rows.length; i++) {
 				var item = res.rows[i];
-				//data.labels.push(makeTime(parseInt(item.time)));
+				data.labels.push(makeTime(parseInt(item.time)));
 				outTempAvg = outletActAvg+item.data.outTemp;
 				roomTempAvg = roomTempAvg +item.data.roomTemp;
 				outletWantAvg = outletWantAvg + item.data.outletWant;
