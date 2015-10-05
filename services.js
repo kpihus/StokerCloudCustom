@@ -40,7 +40,7 @@ function parsePellets(str, data) {
 	var pelletsTotal = obj[0].data[0][1];
 	var pelletsDhw = obj[1].data[0][1];
 
-	data.pelletsHeat = pelletsTotal-pelletsDhw;
+	data.pelletsHeat = pelletsTotal - pelletsDhw;
 
 	return data;
 }
@@ -192,14 +192,26 @@ exports.chartData = function(callback) {
 			if(err) {
 				return callback(err);
 			}
+			var count = 0;
+			var outTempAvg = 0, roomTempAvg = 0, outletWantAvg = 0, outletActAvg = 0, powerAvg = 0;
 			for(var i = 0; i < res.rows.length; i++) {
 				var item = res.rows[i];
-				data.labels.push(makeTime(parseInt(item.time)));
-				data.datasets[0].data.push(item.data.outTemp);
-				data.datasets[1].data.push(item.data.roomTemp);
-				data.datasets[2].data.push(item.data.outletWant);
-				data.datasets[3].data.push(item.data.outletAct);
-				data.datasets[4].data.push(item.data.power);
+				//data.labels.push(makeTime(parseInt(item.time)));
+				outTempAvg = outletActAvg+item.data.outTemp;
+				roomTempAvg = roomTempAvg +item.data.roomTemp;
+				outletWantAvg = outletWantAvg + item.data.outletWant;
+				outletActAvg = outletActAvg +item.data.outletAct;
+				powerAvg = powerAvg + item.data.power;
+
+				if(count=9) {
+					data.datasets[0].data.push(outletActAvg);
+					data.datasets[1].data.push(roomTempAvg);
+					data.datasets[2].data.push(outletWantAvg);
+					data.datasets[3].data.push(outletActAvg);
+					data.datasets[4].data.push(powerAvg);
+					outTempAvg = 0; roomTempAvg = 0; outletWantAvg = 0; outletActAvg = 0; powerAvg = 0;
+				}
+				count++;
 			}
 			callback(null, data);
 		})
