@@ -204,11 +204,11 @@ exports.chartData = function(callback) {
 				powerAvg = powerAvg + item.data.power;
 
 				if(count=9) {
-					data.datasets[0].data.push(outletActAvg);
-					data.datasets[1].data.push(roomTempAvg);
-					data.datasets[2].data.push(outletWantAvg);
-					data.datasets[3].data.push(outletActAvg);
-					data.datasets[4].data.push(powerAvg);
+					data.datasets[0].data.push(outletActAvg/count);
+					data.datasets[1].data.push(roomTempAvg/count);
+					data.datasets[2].data.push(outletWantAvg/count);
+					data.datasets[3].data.push(outletActAvg/count);
+					data.datasets[4].data.push(powerAvg/count);
 					outTempAvg = 0; roomTempAvg = 0; outletWantAvg = 0; outletActAvg = 0; powerAvg = 0;
 				}
 				count++;
