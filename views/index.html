@@ -23,15 +23,29 @@
             width: 190px;
         }
         .box{
-            display: inline-block;
             height: 15px;
-            margin-right: 5px;
             width: 15px;
         }
     </style>
 </head>
 <body>
+<div id="chart">
+    <canvas id="myChart" width="1000" height="600"></canvas>
+</div>
+<div id="right">
+    <label><strong>Legend</strong></label>
 
+    <table>
+        <tbody data-bind="foreach: legend.items">
+        <tr>
+            <td class="box" data-bind="style: {backgroundColor: color}"></td>
+            <td data-bind="text: label"></td>
+            <td data-bind="text: value"></td>
+            <td data-bind="text: unit"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
 <script>
 
     $(document).ready(function() {
@@ -45,16 +59,22 @@
         var data = null;
         function LegendVm() {
             var self = this;
-            self.items = ko.observableArray([
-                {label: "Out temp", value: 5, unit: "C"}
-            ]);
+            self.items = ko.observableArray([]);
 
-            self.additem = function(label, value, unit){
-                self.items.push({label: label, value: value, unit: unit})
+            self.additem = function(label, value, unit, color){
+                self.items.push({label: label, value: value, unit: unit, color: color})
+            };
+            self.updateVal = function(data, pos){
+                var old = JSON.parse(JSON.stringify(self.items()[pos]));
+                old.value = data;
+                self.items.replace(self.items()[pos], old);
             }
-
         }
-        ko.applyBindings(new LegendVm());
+
+        var vm = {
+            legend: new LegendVm()
+        };
+        ko.applyBindings(vm);
         var ctx = document.getElementById("myChart").getContext("2d");
 //        Chart.defaults.global={
 //            responsive: true
@@ -63,22 +83,22 @@
 
         $.get("getData", function(data) {
             chart = myLineChart.Line(data, chartOpts);
-//            makeLegend(data);
+            makeLegend(data);
         });
 
         setInterval(function() {
             update();
+
         }, 60000);
         function makeLegend(data){
             for(var i=0; i<data.datasets.length; i++){
-
-
                 var item = data.datasets[i];
-                var label = item.label;
-                var color = item.strokeColor;
-                var val = item.data[item.data.length-1]+item.unit;
-                var html = "<div><div class='box' style='background-color: "+color+"'></div><span>"+label+"</span><span>("+val+")</span></div>"
-                $('#right').append(html);
+                vm.legend.additem(item.label, item.data[item.data.length-1], item.unit, item.strokeColor);
+            }
+        }
+        function updateLegend(data){
+            for(var i=0; i<data.length; i++){
+                vm.legend.updateVal(data[i], i);
             }
         }
         function update() {
@@ -86,26 +106,14 @@
                 chart.removeData();
                 //{"label":"","data":["7.7","23.3","33.1","33.6","6.4"]}
                 chart.addData(data.data, data.label);
+                updateLegend(data.data);
             });
         }
     });
 
 </script>
-<div id="all">
-    <div id="chart">
-        <canvas id="myChart" width="1000" height="600"></canvas>
-    </div>
-    <div id="right">
-        <label><strong>Legend</strong></label>
 
-        <div data-bind="foreach: items">
-            <div class='box'></div>
-            <span data-bind="text: label"></span>
-            (<span data-bind="text: value"></span>
-            <span data-bind="text: unit"></span>)
-        </div>
 
-    </div>
-</div>
+
 </body>
 </html>

@@ -78,6 +78,7 @@ function makeRequest(options, callback) {
 			str += chunk;
 		});
 		response.on('end', function() {
+
 			callback(str);
 
 		});
