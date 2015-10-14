@@ -26,11 +26,12 @@ function parseGeneral(obj, data) {
 }
 
 function parseWeather(str, data) {
-
 	var outletAct = str.split('<br/>')[1].split(' ')[3].split('&')[0];
 	var outletWant = str.split('<br/>')[1].split(' ')[4].split('&')[0].replace(/^\(/, "");
+	var correctTemp = str.split('<br/>')[3].split(' ')[3].split('&')[0];
 	data.outletAct = outletAct;
 	data.outletWant = outletWant;
+	data.correctedOut = correctTemp;
 
 	return data;
 }
@@ -132,7 +133,18 @@ exports.chartData = function(callback) {
 				label: "Out Temp",
 				unit: "\xB0 C",
 				fillColor: "rgba(168,171,255,0)",
-				strokeColor: "rgba(125,129,255,0.8)",
+				strokeColor: "rgba(125,129,255,0.3)",
+				pointColor: "rgba(125,129,255,0.8)",
+				highlightFill: "rgba(125,129,255,0.8)",
+				highlightStroke: "rgba(125,129,255,0.8)",
+				pointHighlightStroke: "rgba(125,129,255,0.8)",
+				data: []
+			},
+			{
+				label: "Corrected Out",
+				unit: "\xB0 C",
+				fillColor: "rgba(168,171,255,0)",
+				strokeColor: "rgba(125,129,255,1)",
 				pointColor: "rgba(125,129,255,0.8)",
 				highlightFill: "rgba(125,129,255,0.8)",
 				highlightStroke: "rgba(125,129,255,0.8)",
@@ -197,10 +209,11 @@ exports.chartData = function(callback) {
 				var item = res.rows[i];
 				data.labels.push(makeTime(parseInt(item.time)));
 				data.datasets[0].data.push(item.data.outTemp);
-				data.datasets[1].data.push(item.data.roomTemp);
-				data.datasets[2].data.push(item.data.outletWant);
-				data.datasets[3].data.push(item.data.outletAct);
-				data.datasets[4].data.push(item.data.power);
+				data.datasets[1].data.push(item.data.correctedOut);
+				data.datasets[2].data.push(item.data.roomTemp);
+				data.datasets[3].data.push(item.data.outletWant);
+				data.datasets[4].data.push(item.data.outletAct);
+				data.datasets[5].data.push(item.data.power);
 			}
 			callback(null, data);
 		})
@@ -221,6 +234,7 @@ exports.getLatest = function(callback) {
 				label: makeTime(item.time),
 				data: [
 					item.data.outTemp,
+					item.data.correctedOut,
 					item.data.roomTemp,
 					item.data.outletWant,
 					item.data.outletAct,
