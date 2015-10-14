@@ -54,7 +54,8 @@
         var chartOpts = {
             pointDot: false,
             datasetStrokeWidth: 1,
-            animation: false
+            animation: false,
+            scaleShowVerticalLines: false
 //            legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
         };
         var data = null;
@@ -77,9 +78,7 @@
         };
         ko.applyBindings(vm);
         var ctx = document.getElementById("myChart").getContext("2d");
-//        Chart.defaults.global={
-//            responsive: true
-//        };
+
         var myLineChart = new Chart(ctx);
 
         $.get("getData", function(data) {
