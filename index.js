@@ -9,6 +9,13 @@ process.env.TZ = 'Europe/Tallinn';
 var server = new Hapi.Server();
 server.connection({port: 3000});
 
+var io = require('socket.io')(server.listener);
+
+io.on('connection', function(socket){
+	socket.emit('Hello world');
+});
+
+
 server.register(require('vision'), function(err) {
 	server.views({
 		engines: {
@@ -32,6 +39,14 @@ server.register(require('inert'), function(err) {
 			}
 		}
 	});
+});
+
+server.ext('onRequest', function(request, reply) {
+	//if()
+	//return reply('Forwarding to secure route')
+	//		.redirect('https://' + 'www.delfi.ee' + request.path);
+
+	return reply.continue();
 });
 
 server.route({

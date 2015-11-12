@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Node Memory</title>
+    <script src="jquery-1.11.3.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
+    <script src="public/js/Chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
+</head>
+<body>
+<canvas id="myChart" width="1000" height="400"></canvas>
+<div id="legend"></div>
+
+<script>
+    $(document).ready(function() {
+        var chart;
+        var chartOpts = {
+            pointDot: false,
+            datasetStrokeWidth: 1,
+            animation: false,
+            scaleShowVerticalLines: false,
+            legendTemplate : '<ul>'
+            +'<% for (var i=0; i<datasets.length; i++) { %>'
+            +'<li>'
+            +'<span style=\"background-color:<%=datasets[i].lineColor%>\"></span>'
+            +'<% if (datasets[i].label) { %><%= datasets[i].label %><% } %>'
+            +'</li>'
+            +'<% } %>'
+            +'</ul>'
+
+        };
+    var data = {
+        labels: [],
+        datasets: [
+            {
+                label: "Rss",
+                fillColor: "rgba(255,220,220,0)",
+                strokeColor: "rgba(255,0,0,1)",
+                pointColor: "rgba(255,0,0,1)",
+                lineColor: "rgba(255,0,0,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: []
+            },
+            {
+                label: "HeapTotal",
+                fillColor: "rgba(220,220,220,0)",
+                strokeColor: "rgba(0,255,0,1)",
+                pointColor: "rgba(0,255,0,1)",
+                lineColor: "rgba(0,255,0,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: []
+            },
+            {
+                label: "HeapUsed",
+                fillColor: "rgba(220,220,220,0)",
+                strokeColor: "rgba(0,0,255,1)",
+                pointColor: "rgba(0,0,255,1)",
+                lineColor: "rgba(0,0,255,1)",
+                pointStrokeColor: "#fff",
+                pointHighlightFill: "#fff",
+                pointHighlightStroke: "rgba(220,220,220,1)",
+                data: []
+            }
+        ]
+    };
+    var ctx = document.getElementById("myChart").getContext("2d");
+    chart = new Chart(ctx).Line(data, chartOpts);
+        var legend = chart.generateLegend();
+        console.log(legend); //TODO: Remove
+        $('#legend').append(legend);
+    count=0;
+    setInterval(function(){
+        console.log('get data'); //TODO: Remove
+        $.get('https://localhost:8000/profiles/verify2', function(data){
+            console.log(data); //TODO: Remove
+            chart.addData([data.rss/1024/1024, data.heapTotal/1024/1024, data.heapUsed/1024/1024],count++)
+        })
+    }, 1000)
+
+
+
+
+
+    });
+
+</script>
+</body>
+</html>

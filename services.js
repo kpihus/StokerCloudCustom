@@ -20,7 +20,8 @@ function parseGeneral(obj, data) {
 		roomTemp: obj['592'].split(' ')[0],
 		outTemp: obj['524'].split(' ')[0],
 		windSpd: obj['587'].split(' ')[0],
-		power: obj['504'].split(' ')[0]
+		power: obj['504'].split(' ')[0],
+		boiler: obj['501'].split(' ')[0],
 	};
 	return data;
 }
@@ -38,10 +39,15 @@ function parseWeather(str, data) {
 
 function parsePellets(str, data) {
 	var obj = JSON.parse(str);
+	var ts = obj[0].data[0][0];
 	var pelletsTotal = obj[0].data[0][1];
 	var pelletsDhw = obj[1].data[0][1];
-
-	data.pelletsHeat = pelletsTotal-pelletsDhw;
+	data.pellets = {
+		time: ts,
+		total: pelletsTotal,
+		heat: pelletsTotal-pelletsDhw,
+		dhw: pelletsDhw
+	};
 
 	return data;
 }
@@ -97,12 +103,13 @@ function makeRequest(options, callback) {
 
 exports.writeToDb = function(data, callback) {
 	var now = new Date().getTime();
+	delete data.pellets;
 	pg.connect(conString, function(err, client, done) {
 		if(err) {
 			return callback(err);
 		}
 		var query = escape("INSERT INTO %I (time, data) VALUES(%s, %L)", 'data', now, JSON.stringify(data));
-		app.server.log(query);
+		app.server.log('Write data', query);
 		client.query(query, function(err, res) {
 			done();
 			if(err) {
@@ -110,6 +117,30 @@ exports.writeToDb = function(data, callback) {
 			}
 			callback(null, res.rowCount);
 		})
+	});
+};
+
+exports.writePellets = function(data, callback){
+	console.log(JSON.stringify(data)); //TODO: Remove
+	pg.connect(conString, function(err, client, done){
+		var query = escape("SELECT count(id) FROM %I WHERE time = %s", 'pellets', data.time);
+		client.query(query, function(err, res){
+			if(res.rows[0].count == 0){
+				//Insert
+				query = escape("INSERT INTO %I (time, data) VALUES(%s, %L)", 'pellets', data.time, JSON.stringify(data));
+			}else{
+				//Update
+				query = escape("UPDATE %I SET data = %L WHERE time = %s", 'pellets', JSON.stringify(data), data.time);
+			}
+			app.server.log('Write pellets', query);
+			client.query(query, function(err, res){
+				done();
+				if(err){
+					return callback(err);
+				}
+				callback(null, res.rowCount);
+			});
+		});
 	});
 };
 
