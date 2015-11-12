@@ -9,7 +9,12 @@ new CronJob('1 * * * * *', function(){
 				console.log(err);
 			}
 		});
-		services.writePellets(pellets, function(err, res){
+		services.writePellets(pellets.current, function(err, res){
+			if(err){
+				console.log(err);
+			}
+		});
+		services.writePellets(pellets.previous, function(err, res){
 			if(err){
 				console.log(err);
 			}

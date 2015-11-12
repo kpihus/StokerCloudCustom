@@ -42,11 +42,27 @@ function parsePellets(str, data) {
 	var ts = obj[0].data[0][0];
 	var pelletsTotal = obj[0].data[0][1];
 	var pelletsDhw = obj[1].data[0][1];
-	data.pellets = {
+	var current = {
 		time: ts,
 		total: pelletsTotal,
 		heat: pelletsTotal-pelletsDhw,
 		dhw: pelletsDhw
+	};
+
+	ts = obj[0].data[1][0];
+	pelletsTotal = obj[0].data[1][1];
+	pelletsDhw = obj[1].data[1][1];
+	var previous = {
+		time: ts,
+		total: pelletsTotal,
+		heat: pelletsTotal-pelletsDhw,
+		dhw: pelletsDhw
+	};
+
+
+	data.pellets = {
+		current: current,
+		previous: previous
 	};
 
 	return data;
