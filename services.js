@@ -254,12 +254,13 @@ exports.chartData = function(callback) {
 			}
 			for(var i = 0; i < res.rows.length; i++) {
 				var item = res.rows[i];
+				var outletAct = (item.data.outletAct>50)? 50 : item.data.outletAct;
 				data.labels.push(makeTime(parseInt(item.time)));
 				data.datasets[0].data.push(item.data.outTemp);
 				data.datasets[1].data.push(item.data.correctedOut);
 				data.datasets[2].data.push(item.data.roomTemp);
 				data.datasets[3].data.push(item.data.outletWant);
-				data.datasets[4].data.push(item.data.outletAct);
+				data.datasets[4].data.push(outletAct);
 				data.datasets[5].data.push(item.data.power);
 			}
 			callback(null, data);
