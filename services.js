@@ -172,6 +172,12 @@ function makeTime(timestamp) {
 	return time;
 }
 
+function makeHour(timesamp){
+	var hour = new Date(timesamp).getHours();
+	hour = (hour<10)? '0'+hour:hour;
+	return(hour);
+}
+
 exports.chartData = function(callback) {
 	var data = {
 		labels: [],
@@ -266,6 +272,45 @@ exports.chartData = function(callback) {
 			callback(null, data);
 		})
 	});
+};
+
+exports.pelletsData = function(callback){
+	var data = {
+		labels: [],
+		datasets: [
+			{
+				label: "Out Temp",
+				unit: "\xB0 C",
+				fillColor: "rgba(22,112,25,0.8)",
+				strokeColor: "rgba(22,112,25,0.8)",
+				pointColor: "rgba(22,112,25,0",
+				highlightFill: "rgba(22,112,25,1",
+				highlightStroke: "rgba(22,112,25,1",
+				pointHighlightStroke: "rgba(22,112,25,0",
+				data: []
+			}
+		]
+	};
+	pg.connect(conString, function(err, client, done) {
+		if(err) {
+			return callback(err);
+		}
+		var now = new Date().getTime();
+		var query = escape("SELECT * FROM %I WHERE time > %s ORDER BY time ASC", 'pellets', now - 3600 * 24 * 1000);
+		client.query(query, function(err, res) {
+			done();
+			if(err) {
+				return callback(err);
+			}
+			for(var i = 0; i < res.rows.length; i++) {
+				var item = res.rows[i];
+				data.labels.push(makeHour(parseInt(item.time)));
+				data.datasets[0].data.push(item.data.heat);
+			}
+			callback(null, data);
+		})
+	});
+
 
 };
 

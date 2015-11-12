@@ -32,6 +32,7 @@
 <body>
 <div id="chart">
     <canvas id="myChart" width="1000" height="600"></canvas>
+    <canvas id="pellets" width="1000" height="300"></canvas>
 </div>
 <div id="right">
     <label><strong>Legend</strong></label>
@@ -50,7 +51,7 @@
 <script>
 
     $(document).ready(function() {
-        var chart;
+        var chart, pellets;
         var chartOpts = {
             pointDot: false,
             datasetStrokeWidth: 1,
@@ -78,12 +79,17 @@
         };
         ko.applyBindings(vm);
         var ctx = document.getElementById("myChart").getContext("2d");
+        var ctxPellets = document.getElementById("pellets").getContext("2d");
 
         var myLineChart = new Chart(ctx);
+        var pelletChart = new Chart(ctxPellets);
 
         $.get("getData", function(data) {
             chart = myLineChart.Line(data, chartOpts);
             makeLegend(data);
+        });
+        $.get("getPellets", function(data){
+            pellets = pelletChart.Bar(data);
         });
 
         setInterval(function() {

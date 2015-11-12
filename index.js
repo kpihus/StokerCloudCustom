@@ -72,6 +72,19 @@ server.route({
 
 server.route({
 	method: 'GET',
+	path: '/getPellets',
+	handler: function(request, reply){
+		services.pelletsData(function(err, res){
+			if(err){
+				server.log(err);
+			}
+			reply(res);
+		})
+	}
+});
+
+server.route({
+	method: 'GET',
 	path: '/getLatest',
 	handler: function(request, reply){
 		services.getLatest(function(err, res){
