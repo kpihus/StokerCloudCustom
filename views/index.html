@@ -59,6 +59,9 @@
             scaleShowVerticalLines: false
 //            legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
         };
+        var pellChartOpts = {
+
+        };
         var data = null;
         function LegendVm() {
             var self = this;
@@ -89,7 +92,7 @@
             makeLegend(data);
         });
         $.get("getPellets", function(data){
-            pellets = pelletChart.Bar(data);
+            pellets = pelletChart.Bar(data, pellChartOpts);
         });
 
         setInterval(function() {

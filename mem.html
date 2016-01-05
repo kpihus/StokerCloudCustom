@@ -10,82 +10,109 @@
 </head>
 <body>
 <canvas id="myChart" width="1000" height="400"></canvas>
-<div id="legend"></div>
+<br>
+<input type="checkbox" checked name="active" id="active"><label for="active">Active</label><br>
+<button type="button" id="clearGraph">Clear</button>
+<div id="legend">
+    <div>Active requests:<span id="ar"></span></div>
+</div>
 
 <script>
-    $(document).ready(function() {
+    $(document).ready(function(){
+        $('#clearGraph').click(function(){
+            chart.clear();
+        });
         var chart;
         var chartOpts = {
             pointDot: false,
             datasetStrokeWidth: 1,
             animation: false,
             scaleShowVerticalLines: false,
-            legendTemplate : '<ul>'
-            +'<% for (var i=0; i<datasets.length; i++) { %>'
-            +'<li>'
-            +'<span style=\"background-color:<%=datasets[i].lineColor%>\"></span>'
-            +'<% if (datasets[i].label) { %><%= datasets[i].label %><% } %>'
-            +'</li>'
-            +'<% } %>'
-            +'</ul>'
+            legendTemplate: '<ul>'
+            + '<% for (var i=0; i<datasets.length; i++) { %>'
+            + '<li>'
+            + '<span style=\"background-color:<%=datasets[i].lineColor%>\"></span>'
+            + '<% if (datasets[i].label) { %><%= datasets[i].label %><% } %>'
+            + '</li>'
+            + '<% } %>'
+            + '</ul>'
 
         };
-    var data = {
-        labels: [],
-        datasets: [
-            {
-                label: "Rss",
-                fillColor: "rgba(255,220,220,0)",
-                strokeColor: "rgba(255,0,0,1)",
-                pointColor: "rgba(255,0,0,1)",
-                lineColor: "rgba(255,0,0,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-                data: []
-            },
-            {
-                label: "HeapTotal",
-                fillColor: "rgba(220,220,220,0)",
-                strokeColor: "rgba(0,255,0,1)",
-                pointColor: "rgba(0,255,0,1)",
-                lineColor: "rgba(0,255,0,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-                data: []
-            },
-            {
-                label: "HeapUsed",
-                fillColor: "rgba(220,220,220,0)",
-                strokeColor: "rgba(0,0,255,1)",
-                pointColor: "rgba(0,0,255,1)",
-                lineColor: "rgba(0,0,255,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-                data: []
+        var data = {
+            labels: [],
+            datasets: [
+                {
+                    label: "Rss",
+                    fillColor: "rgba(255,220,220,0)",
+                    strokeColor: "rgba(255,0,0,1)",
+                    pointColor: "rgba(255,0,0,1)",
+                    lineColor: "rgba(255,0,0,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    data: []
+                },
+                {
+                    label: "HeapTotal",
+                    fillColor: "rgba(220,220,220,0)",
+                    strokeColor: "rgba(0,255,0,1)",
+                    pointColor: "rgba(0,255,0,1)",
+                    lineColor: "rgba(0,255,0,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    data: []
+                },
+                {
+                    label: "HeapUsed",
+                    fillColor: "rgba(220,220,220,0)",
+                    strokeColor: "rgba(0,0,255,1)",
+                    pointColor: "rgba(0,0,255,1)",
+                    lineColor: "rgba(0,0,255,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    data: []
+                },
+                {
+                    label: "ResponseTime",
+                    fillColor: "rgba(220,220,220,0)",
+                    strokeColor: "rgba(0,0,0,1)",
+                    pointColor: "rgba(0,0,0,1)",
+                    lineColor: "rgba(0,0,0,1)",
+                    pointStrokeColor: "#fff",
+                    pointHighlightFill: "#fff",
+                    pointHighlightStroke: "rgba(220,220,220,1)",
+                    data: []
+                }
+            ]
+        };
+        var ctx = document.getElementById("myChart").getContext("2d");
+        chart = new Chart(ctx).Line(data, chartOpts);
+//        var legend = chart.generateLegend();
+
+//        console.log(legend); //TODO: Remove
+        $('#legend').append('<div style="background-color: rgba(255,0,0,1)">RSS: <span id="rss"></span> Mb</div>');
+        $('#legend').append('<div style="background-color: rgba(0,255,0,1)">HeapTotal: <span id="ht"></span> Mb</div>');
+        $('#legend').append('<div style="background-color: rgba(0,0,255,1); color: #fff;">HeapUsed: <span id="hu"></span> Mb</div>');
+        $('#legend').append('<div style="background-color: rgba(0,0,0,1); color: #fff;">ResponseTime: <span id="rt"></span> cs</div>');
+        count = 0;
+        setInterval(function(){
+            if(document.getElementById('active').checked){
+                var start = new Date().getTime();
+                $('#ar').text($.active);
+                console.log('get data'); //TODO: Remove
+                $.get('https://group-app-load-test.herokuapp.com/profiles/verify2', function(data){
+                    console.log(data); //TODO: Remove
+                    var total = (new Date().getTime() - start) / 10;
+                    $('#rss').text(Math.floor(data.rss / 1024 / 1024));
+                    $('#ht').text(Math.floor(data.heapTotal / 1024 / 1024));
+                    $('#hu').text(Math.floor(data.heapUsed / 1024 / 1024));
+                    $('#rt').text(total);
+                    chart.addData([data.rss / 1024 / 1024, data.heapTotal / 1024 / 1024, data.heapUsed / 1024 / 1024, total], count++)
+                });
             }
-        ]
-    };
-    var ctx = document.getElementById("myChart").getContext("2d");
-    chart = new Chart(ctx).Line(data, chartOpts);
-        var legend = chart.generateLegend();
-        console.log(legend); //TODO: Remove
-        $('#legend').append(legend);
-    count=0;
-    setInterval(function(){
-        console.log('get data'); //TODO: Remove
-        $.get('https://localhost:8000/profiles/verify2', function(data){
-            console.log(data); //TODO: Remove
-            chart.addData([data.rss/1024/1024, data.heapTotal/1024/1024, data.heapUsed/1024/1024],count++)
-        })
-    }, 1000)
-
-
-
-
-
+        }, 1000);
     });
 
 </script>

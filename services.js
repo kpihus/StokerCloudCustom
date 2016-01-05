@@ -173,9 +173,9 @@ function makeTime(timestamp) {
 }
 
 function makeHour(timesamp){
-	var hour = new Date(timesamp).getHours();
-	hour = (hour<10)? '0'+hour:hour;
-	return(hour);
+	var hour = new Date(Date(timesamp)).getHours();
+	hour = (hour<10)? '0'+ hour : hour;
+	return hour;
 }
 
 exports.chartData = function(callback) {
@@ -243,6 +243,16 @@ exports.chartData = function(callback) {
 				highlightFill: "rgba(220,220,220,0.75)",
 				highlightStroke: "rgba(220,220,220,1)",
 				data: []
+			},
+			{
+				label: "Boiler",
+				unit: "\xB0 C",
+				fillColor: "rgba(255,217,0,0)",
+				strokeColor: "rgba(255,217,0,0.8)",
+				pointColor: "rgba(255,217,0,0.8)",
+				highlightFill: "rgba(255,217,0,0.75)",
+				highlightStroke: "rgba(255,217,0,1)",
+				data: []
 			}
 
 		]
@@ -260,14 +270,14 @@ exports.chartData = function(callback) {
 			}
 			for(var i = 0; i < res.rows.length; i++) {
 				var item = res.rows[i];
-				var outletAct = (item.data.outletAct>50)? 50 : item.data.outletAct;
 				data.labels.push(makeTime(parseInt(item.time)));
 				data.datasets[0].data.push(item.data.outTemp);
 				data.datasets[1].data.push(item.data.correctedOut);
 				data.datasets[2].data.push(item.data.roomTemp);
 				data.datasets[3].data.push(item.data.outletWant);
-				data.datasets[4].data.push(outletAct);
+				data.datasets[4].data.push(item.data.outletAct);
 				data.datasets[5].data.push(item.data.power);
+				data.datasets[6].data.push(item.data.boiler);
 			}
 			callback(null, data);
 		})
@@ -331,7 +341,8 @@ exports.getLatest = function(callback) {
 					item.data.roomTemp,
 					item.data.outletWant,
 					item.data.outletAct,
-					item.data.power
+					item.data.power,
+					item.data.boiler
 				]
 			};
 			callback(null, data);
