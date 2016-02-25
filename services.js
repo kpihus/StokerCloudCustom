@@ -179,7 +179,7 @@ function makeHour(timesamp) {
   return hour;
 }
 
-exports.chartData = function (user, callback) {
+exports.chartData = function (user, hours, callback) {
   var data = {
     labels: [],
     datasets: [
@@ -263,7 +263,7 @@ exports.chartData = function (user, callback) {
     if (err) {
       return callback(err);
     }
-    var query = escape("SELECT * FROM %I WHERE time < %s and time > %s AND usern = %L", 'data', now, now - 3600 * 24 * 1000, user);
+    var query = escape("SELECT * FROM %I WHERE time < %s and time > %s AND usern = %L", 'data', now, now - 3600 * hours * 1000, user);
     client.query(query, function (err, res) {
       done();
       if (err) {
@@ -285,7 +285,7 @@ exports.chartData = function (user, callback) {
   });
 };
 
-exports.pelletsData = function (user, callback) {
+exports.pelletsData = function (user, hours, callback) {
   var data = {
     labels: [],
     datasets: [
@@ -307,7 +307,7 @@ exports.pelletsData = function (user, callback) {
       return callback(err);
     }
     var now = new Date().getTime();
-    var query = escape("SELECT * FROM %I WHERE time > %s AND usern = %L ORDER BY time ASC", 'pellets', now - 3600 * 24 * 1000, user);
+    var query = escape("SELECT * FROM %I WHERE time > %s AND usern = %L ORDER BY time ASC", 'pellets', now - 3600 * hours * 1000, user);
     client.query(query, function (err, res) {
       done();
       if (err) {

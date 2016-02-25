@@ -83,6 +83,7 @@
         };
 
         var user = getUrlParameter('user');
+        var hours = getUrlParameter('h');
 
 
 
@@ -110,11 +111,11 @@
         var myLineChart = new Chart(ctx);
         var pelletChart = new Chart(ctxPellets);
 
-        $.get("getData/"+user, function(data) {
+        $.get("getData/"+user+'/'+hours, function(data) {
             chart = myLineChart.Line(data, chartOpts);
             makeLegend(data);
         });
-        $.get("getPellets/"+user, function(data){
+        $.get("getPellets/"+user+'/'+hours, function(data){
             pellets = pelletChart.Bar(data, pellChartOpts);
         });
 
