@@ -59,9 +59,9 @@ server.route({
 
 server.route({
 	method: 'GET',
-	path: '/getData',
+	path: '/getData/{user}',
 	handler: function(request, reply){
-		services.chartData(function(err, res){
+		services.chartData(request.params.user, function(err, res){
 			if(err){
 				server.log(err);
 			}
@@ -72,9 +72,9 @@ server.route({
 
 server.route({
 	method: 'GET',
-	path: '/getPellets',
+	path: '/getPellets/{user}',
 	handler: function(request, reply){
-		services.pelletsData(function(err, res){
+		services.pelletsData(request.params.user, function(err, res){
 			if(err){
 				server.log(err);
 			}
@@ -85,9 +85,9 @@ server.route({
 
 server.route({
 	method: 'GET',
-	path: '/getLatest',
+	path: '/getLatest/{user}',
 	handler: function(request, reply){
-		services.getLatest(function(err, res){
+		services.getLatest(request.params.user, function(err, res){
 			if(err){
 				server.log(err);
 			}

@@ -1,5 +1,23 @@
 $(document).ready(function() {
 	var chart, pellets;
+
+	var getUrlParameter = function getUrlParameter(sParam) {
+		var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+			sURLVariables = sPageURL.split('&'),
+			sParameterName,
+			i;
+
+		for (i = 0; i < sURLVariables.length; i++) {
+			sParameterName = sURLVariables[i].split('=');
+
+			if (sParameterName[0] === sParam) {
+				return sParameterName[1] === undefined ? true : sParameterName[1];
+			}
+		}
+	};
+
+	var user = getUrlParameter('user');
+
 	var chartOpts = {
 		pointDot: false,
 		datasetStrokeWidth: 1,
@@ -35,11 +53,11 @@ $(document).ready(function() {
 	var myLineChart = new Chart(ctx);
 	var pelletChart = new Chart(ctxPellets);
 
-	$.get("getData", function(data) {
+	$.get("getData/"+user, function(data) {
 		chart = myLineChart.Line(data, chartOpts);
 		makeLegend(data);
 	});
-	$.get("getPellets", function(data){
+	$.get("getPellets/"+user, function(data){
 		pellets = pelletChart.Bar(data, pellChartOpts);
 	});
 
@@ -59,7 +77,7 @@ $(document).ready(function() {
 		}
 	}
 	function update() {
-		$.get("getLatest", function(data) {
+		$.get("getLatest/"+user, function(data) {
 			chart.removeData();
 			//{"label":"","data":["7.7","23.3","33.1","33.6","6.4"]}
 			chart.addData(data.data, data.label);
