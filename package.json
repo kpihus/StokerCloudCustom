@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/kpihus/StokerCloudCustom#readme",
   "dependencies": {
+    "@risingstack/trace": "^3.0.2",
     "chart.js": "^1.0.2",
     "cron": "^1.0.9",
     "dotenv": "^1.2.0",

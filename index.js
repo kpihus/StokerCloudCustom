@@ -1,4 +1,6 @@
 require('dotenv').load();
+require('@risingstack/trace');
+
 var Hapi = require('hapi');
 var Good = require('good');
 var cron = require('./cron');
